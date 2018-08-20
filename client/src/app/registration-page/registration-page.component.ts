@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../shared/services/auth.service';
+import { MaterialService } from '../shared/services/material.service';
 
 @Component({
   selector: 'crmsc-registration-page',
@@ -35,7 +36,7 @@ export class RegistrationPageComponent implements OnInit, OnDestroy {
         }
       }),
       error => {
-        console.warn(error);
+        MaterialService.toast(error.error.message);
         this.form.enable();
       }
     );

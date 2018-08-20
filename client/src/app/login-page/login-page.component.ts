@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { AuthService } from '../shared/services/auth.service';
+import { MaterialService } from '../shared/services/material.service';
 
 @Component({
   selector: 'crmsc-login-page',
@@ -28,9 +29,11 @@ export class LoginPageComponent implements OnInit, OnDestroy {
 
     this.route.queryParams.subscribe((params: Params) => {
       if (params['registered']) {
-        // test
+        MaterialService.toast('Регистрация успешно завершена.');
       } else if (params['accessDenied']) {
-        // test
+        MaterialService.toast('Для дальнейшей работы, авторизуйтесь в системе!');
+      } else if (params['sessionExpired']) {
+        MaterialService.toast('Пожалуйста войдите в систему заного.');
       }
     });
   }
@@ -40,7 +43,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     this.subscription = this.authService.login(this.form.value).subscribe(
       () => this.router.navigate(['/login']),
       error => {
-        console.warn(error);
+        MaterialService.toast(error.error.message);
         this.form.enable();
       }
     );
