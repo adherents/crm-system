@@ -5,17 +5,18 @@ import { AuthLayoutComponent } from './shared/layouts/auth-layout/auth-layout.co
 import { SiteLayoutComponent } from './shared/layouts/site-layout/site-layout.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { RegistrationPageComponent } from './registration-page/registration-page.component';
+import { AuthGuard } from './shared/services/auth.guard';
 
 
 const routes: Routes = [
-  { 
+  {
     path: '', component: AuthLayoutComponent, children: [
       { path: '', redirectTo: '/login', pathMatch: 'full' },
       { path: 'login', component: LoginPageComponent },
       { path: 'registration', component: RegistrationPageComponent }
-    ] 
+    ]
   },
-  { path: '', component: SiteLayoutComponent, children: [] }
+  { path: '', component: SiteLayoutComponent, canActivate: [AuthGuard], children: [] }
 ];
 
 @NgModule({
