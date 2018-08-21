@@ -33,7 +33,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
       } else if (params['accessDenied']) {
         MaterialService.toast('Для дальнейшей работы, авторизуйтесь в системе!');
       } else if (params['sessionExpired']) {
-        MaterialService.toast('Пожалуйста войдите в систему заного.');
+        MaterialService.toast('Пожалуйста войдите в систему заново.');
       }
     });
   }
@@ -41,7 +41,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.form.disable();
     this.subscription = this.authService.login(this.form.value).subscribe(
-      () => this.router.navigate(['/login']),
+      () => this.router.navigate(['/overview']),
       error => {
         MaterialService.toast(error.error.message);
         this.form.enable();
