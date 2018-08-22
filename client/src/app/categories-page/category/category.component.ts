@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
@@ -6,6 +6,7 @@ import { of } from 'rxjs';
 
 import { CategoriesService } from '../../shared/services/categories.service';
 import { MaterialService } from '../../shared/services/material.service';
+import { Category } from '../../shared/models/category.model';
 
 @Component({
   selector: 'crmsc-category',
@@ -13,8 +14,12 @@ import { MaterialService } from '../../shared/services/material.service';
   styleUrls: ['./category.component.scss']
 })
 export class CategoryComponent implements OnInit {
+  @ViewChild('input') inputRef: ElementRef;
   form: FormGroup;
   isNew = true;
+  image: File;
+  imagePreview;
+  category: Category;
 
   constructor(
     private route: ActivatedRoute,
@@ -42,11 +47,13 @@ export class CategoryComponent implements OnInit {
         )
       )
       .subscribe(
-        category => {
+        (category: Category) => {
           if (category) {
+            this.category = category;
             this.form.patchValue({
               name: category.name
             });
+            this.imagePreview = category.imageSrc;
             MaterialService.updateInput();
           }
           this.form.enable();
@@ -55,7 +62,41 @@ export class CategoryComponent implements OnInit {
       );
   }
 
+  triggerClick() {
+    this.inputRef.nativeElement.click();
+  }
+
+  onFileUpload(event: Event) {
+    const file = (<HTMLInputElement>event.target).files[0];
+    this.image = file;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
   onSubmit() {
+    let obs$;
+    this.form.disable();
+    if (this.isNew) {
+      obs$ = this.categoriesService.createCategory(this.form.value.name, this.image);
+    } else {
+      obs$ = this.categoriesService.editCategory(this.category._id, this.form.value.name, this.image);
+    }
+
+    obs$.subscribe(
+      category => {
+        this.category = category;
+        MaterialService.toast('Изменения успешно сохранены.');
+        this.form.enable();
+      },
+      error => {
+        MaterialService.toast(error.error.message);
+        this.form.enable();
+      }
+    );
   }
 
 }
