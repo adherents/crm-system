@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -20,10 +20,12 @@ export class CategoryComponent implements OnInit {
   image: File;
   imagePreview;
   category: Category;
+  messageSuccess: string;
 
   constructor(
     private route: ActivatedRoute,
-    private categoriesService: CategoriesService
+    private categoriesService: CategoriesService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -41,7 +43,6 @@ export class CategoryComponent implements OnInit {
               this.isNew = false;
               return this.categoriesService.getCategoryById(params['id']);
             }
-
             return of(null);
           }
         )
@@ -77,24 +78,47 @@ export class CategoryComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
+  deleteCategory() {
+    const decision = window.confirm(`Вы уверены что хотите удалить категорию "${this.category.name}"`);
+    if (decision) {
+      this.categoriesService.deleteCategory(this.category._id)
+        .subscribe(
+          response => {
+            MaterialService.toast(response.message);
+          },
+          error => {
+            MaterialService.toast(error.error.message);
+          },
+          () => {
+            this.router.navigate(['/categories']);
+          }
+        );
+    }
+  }
+
   onSubmit() {
     let obs$;
     this.form.disable();
     if (this.isNew) {
       obs$ = this.categoriesService.createCategory(this.form.value.name, this.image);
+      this.messageSuccess = 'Категория успешно добавлена.';
     } else {
       obs$ = this.categoriesService.editCategory(this.category._id, this.form.value.name, this.image);
+      this.messageSuccess = 'Изменения успешно сохранены.';
     }
 
     obs$.subscribe(
       category => {
         this.category = category;
-        MaterialService.toast('Изменения успешно сохранены.');
+        MaterialService.toast(this.messageSuccess);
         this.form.enable();
       },
       error => {
         MaterialService.toast(error.error.message);
         this.form.enable();
+      },
+      () => {
+        this.router.navigate(['/categories']);
       }
     );
   }
