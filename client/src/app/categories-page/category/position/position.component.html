@@ -2,38 +2,85 @@
   <div class="col s12">
     <div class="page-subtitle">
       <h4>Позиции:</h4>
-      <button class="waves-effect waves-light btn grey darken-1 btn-small modal-trigger" data-target="create-modal">
+      <button 
+        (click)="onModalOpen()"
+        class="waves-effect waves-light btn grey darken-1 btn-small">
         Добавить позицию
       </button>
     </div>
 
-    <div class="collection">
-      <a class="collection-item collection-item-icon">
+    <div *ngIf="!loading; else loader">
+    <div class="collection" *ngIf="positions.length !== 0; else empty">
+      <a 
+        class="collection-item collection-item-icon"
+        (click)="onModalOpen(position)"
+        *ngFor="let position of positions">
         <span>
-          Кофе <strong>20 руб.</strong>
+          {{position.name}} <strong>{{position.cost}} руб.</strong>
         </span>
         <span>
-          <i class="material-icons">delete</i>
+          <i class="material-icons" (click)="onPositionDelete($event, position)">delete</i>
         </span>
       </a>
     </div>
+    <ng-template #empty>
+      <div class="center">В данной категории пока нет позиций.</div>
+    </ng-template>
+    </div>
+    <ng-template #loader>
+      <crmsc-loader></crmsc-loader>
+    </ng-template>
   </div>
 </div>
 
-<div id="create-modal" class="modal">
-  <div class="modal-content">
-    <h4 class="mb1">Добавить позицию</h4>
-    <div class="input-field">
-      <input id="pos-name" type="text" required>
-      <label for="pos-name">Название</label>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="modal" #modal>
+    <div class="modal-content">
+      <h4 class="mb1">Добавить позицию</h4>
+      <div class="input-field">
+        <input 
+          formControlName="name"
+          [ngClass]="{'invalid': form.get('name').invalid && form.get('name').touched}"
+          id="pos-name" 
+          type="text">
+        <label for="pos-name">Название</label>
+        <span 
+          *ngIf="form.get('name').invalid && form.get('name').touched"
+          class="helper-text red-text">
+          Поле название необходимо заполнить.
+        </span>
+      </div>
+      <div class="input-field">
+        <input 
+          formControlName="cost"
+          [ngClass]="{'invalid': form.get('cost').invalid && form.get('cost').touched}"
+          id="pos-cost" 
+          min="0"
+          pattern="^[0-9]+[0-9]*$"
+          type="number">
+        <label for="pos-cost">Цена</label>
+        <span 
+          class="helper-text red-text"
+          *ngIf="form.get('cost').invalid && form.get('cost').touched">
+          <span 
+            *ngIf="form.get('cost').errors['required']">
+            Поле цена необходимо заполнить.
+          </span>
+          <span 
+            *ngIf="form.get('cost').errors['min']">
+            Цена не может быть меньше 0 рублей.
+          </span>
+        </span>
+      </div>
     </div>
-    <div class="input-field">
-      <input id="pos-cost" type="text" required>
-      <label for="pos-cost">Цена</label>
+    <div class="modal-footer">
+      <button type="button" (click)="onModalClose()" class="modal-action waves-effect waves-black btn-flat">Отмена</button>
+      <button 
+        class="modal-action btn waves-effect" 
+        [disabled]="form.disabled || form.invalid"
+        type="submit">
+        Сохранить
+      </button>
     </div>
   </div>
-  <div class="modal-footer">
-    <a href="#!" class="modal-action waves-effect waves-black btn-flat">Отмена</a>
-    <button class="modal-action btn waves-effect">Сохранить</button>
-  </div>
-</div>
+</form>

@@ -79,7 +79,7 @@ export class CategoryComponent implements OnInit {
   }
 
   deleteCategory() {
-    const decision = window.confirm(`Вы уверены что хотите удалить категорию "${this.category.name}"`);
+    const decision = window.confirm(`Вы уверены что хотите удалить категорию "${this.category.name}"?`);
     if (decision) {
       this.categoriesService.deleteCategory(this.category._id)
         .subscribe(
