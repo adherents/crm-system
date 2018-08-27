@@ -5,6 +5,8 @@ import { switchMap, map } from 'rxjs/operators';
 
 import { PositionsService } from '../../shared/services/positions.service';
 import { OrdersService } from '../../shared/services/orders.service';
+import { Position } from '../../shared/models/position.model';
+import { MaterialService } from '../../shared/services/material.service';
 
 @Component({
   selector: 'crmsc-order-positions',
@@ -30,7 +32,7 @@ export class OrderPositionsComponent implements OnInit {
         ),
         map(
           (positions: Position[]) => {
-            return positions.map((position: any) => {
+            return positions.map(position => {
               position.quantity = 1;
               return position;
             });
@@ -40,7 +42,7 @@ export class OrderPositionsComponent implements OnInit {
   }
 
   addToOrder(position: Position) {
-    console.log(position);
+    MaterialService.toast(`Добавлено х${position.quantity}.`);
     this.ordersService.addOrder(position);
   }
 

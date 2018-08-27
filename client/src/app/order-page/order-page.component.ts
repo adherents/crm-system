@@ -3,6 +3,7 @@ import { Router, NavigationEnd } from '@angular/router';
 
 import { MaterialService, MaterialInstance } from '../shared/services/material.service';
 import { OrdersService } from '../shared/services/orders.service';
+import { OrderPosition } from '../shared/models/orderPosition.model';
 
 @Component({
   selector: 'crmsc-order-page',
@@ -16,7 +17,7 @@ export class OrderPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private router: Router,
-    private ordersService: OrdersService
+    public ordersService: OrdersService
   ) {}
 
   ngOnInit() {
@@ -38,6 +39,10 @@ export class OrderPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onModalClose() {
     this.modal.close();
+  }
+
+  onRemovePosition(orderPosition: OrderPosition) {
+    this.ordersService.removeOrder(orderPosition);
   }
 
   submit() {
