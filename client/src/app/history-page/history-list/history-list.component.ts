@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+
+import { Order } from '../../shared/models/order.model';
 
 @Component({
   selector: 'crmsc-history-list',
@@ -6,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./history-list.component.scss']
 })
 export class HistoryListComponent implements OnInit {
+  @Input() orders: Order[];
 
   constructor() { }
 

@@ -29,7 +29,7 @@ module.exports.getAll = async function(req, res) {
       .skip(+req.query.offset)
       .limit(+req.query.limit)
 
-    res.statis(200).json(orders)
+    res.status(200).json(orders)
   } catch (err) {
     errorHandler(res, err)
   }
