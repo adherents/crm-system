@@ -1,12 +1,22 @@
 <div class="page-title">
   <h4>История заказов</h4>
-  <button class="btn btn-small" (click)="isFilterVisible = !isFilterVisible" [ngClass]="{'active': isFilterVisible}" data-position="left"
+  <button 
+    class="btn btn-small" 
+    (click)="isFilterVisible = !isFilterVisible" 
+    [ngClass]="{
+      'active': isFilterVisible,
+      'red': isFiltered()
+    }" 
+    data-position="left"
     #tooltip data-tooltip="Открыть фильтр">
     <i class="material-icons">filter_list</i>
   </button>
 </div>
 
-<crmsc-history-filter *ngIf="isFilterVisible"></crmsc-history-filter>
+<crmsc-history-filter 
+  (filterApply)="applyFilter($event)"
+  *ngIf="isFilterVisible">
+</crmsc-history-filter>
 
 <div *ngIf="!isReloading; else reloadingPage">
   <div *ngIf="orders.length > 0; else empty">

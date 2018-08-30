@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { MaterialInstance, MaterialService } from '../shared/services/material.service';
 import { OrdersService } from '../shared/services/orders.service';
 import { Order } from '../shared/models/order.model';
+import { Filter } from '../shared/models/filter.model';
 
 const STEP = 2;
 
@@ -23,6 +24,7 @@ export class HistoryPageComponent implements OnInit, OnDestroy, AfterViewInit {
   isLoading = false;
   isReloading = false;
   ordersEnded = false;
+  filter: Filter = {};
 
   constructor(
     private ordersService: OrdersService
@@ -47,10 +49,10 @@ export class HistoryPageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getListData() {
-    const params = {
+    const params = Object.assign({}, this.filter, {
       offset: this.offset,
       limit: this.limit
-    };
+    });
     this.subscription = this.ordersService.getAllOrders(params)
       .subscribe(orders => {
         this.orders = this.orders.concat(orders);
@@ -64,6 +66,18 @@ export class HistoryPageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.offset += STEP;
     this.isLoading = true;
     this.getListData();
+  }
+
+  applyFilter(filter: Filter) {
+    this.orders = [];
+    this.offset = 0;
+    this.filter = filter;
+    this.isReloading = true;
+    this.getListData();
+  }
+
+  isFiltered(): boolean {
+    return Object.keys(this.filter).length !== 0;
   }
 
 }

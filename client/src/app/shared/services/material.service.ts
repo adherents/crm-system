@@ -1,5 +1,7 @@
 import { ElementRef } from '@angular/core';
 
+import { Datepicker } from '../models/datepicker.model';
+
 declare var M;
 
 export interface MaterialInstance {
@@ -27,5 +29,13 @@ export class MaterialService {
 
   static initTooltip(ref: ElementRef): MaterialInstance {
     return M.Tooltip.init(ref.nativeElement);
+  }
+
+  static initDatepicker(ref: ElementRef, onClose: () => void): Datepicker {
+    return M.Datepicker.init(ref.nativeElement, {
+      format: 'dd.mm.yyyy',
+      showClearBtn: true,
+      onClose
+    });
   }
 }
