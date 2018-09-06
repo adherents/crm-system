@@ -1,3 +1,21 @@
-<p>
-  analytics-page works!
-</p>
+<div class="page-title">
+  <h4>Аналитика</h4>
+</div>
+
+<div [ngStyle]="{display: pending ? 'none' : 'block'}">
+  <div class="average-price">
+    <p>Средний чек: <strong>{{average}} р.</strong></p>
+  </div>
+
+  <div class="analytics-block pb3">
+    <h5>Выручка</h5>
+    <canvas #gainChart></canvas>
+  </div>
+
+  <div class="analytics-block">
+    <h5>Заказы</h5>
+    <canvas #orderChart></canvas>
+  </div>
+</div>
+
+<crmsc-loader *ngIf="pending"></crmsc-loader>
