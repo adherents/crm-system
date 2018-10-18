@@ -1,0 +1,3 @@
+# CRM-system
+
+CRM-system is a MEAN stack web application designed to help businesses meet the overall goals of customer relationship management. It consists of two parts: front-end and back-end. Front-end part was created with Angular6+Materialize and besides sign-in/sign-up functionality contains five main pages: overview, analytics, history, order and category page. Back-end part consists of a bundle NodeJS+Express on one side and MongoDB on the other one. The app database was created via mLab service. Project was deployed on heroku and you can check live demo [here](https://ancient-bastion-41591.herokuapp.com/).
